@@ -1,10 +1,9 @@
 program task219H;
 var
 	c: char;	
-	otkr, zakr: integer;
+	zakr: integer;
 	res1: boolean;
 begin
-	otkr := 0;
 	zakr := 0;
 	res1 := false;
 
@@ -13,28 +12,24 @@ begin
 		read(c);
 		if c = #10 then 
 		begin
-			if (otkr = zakr) and res1 then
-				writeln ('YES')
-			else
-				writeln ('NO');			
-			otkr := 0;
-			zakr := 0;
-			res1 := true
+			writeln (zakr);
+			res1 := false;
+			zakr := 0
 		end
 		
 		else
 		begin
 			if (c = '(') then
-				otkr := otkr + 1
+				res1 := true
 				
-			else if (c = ')') then
+			else if (c = ')') and res1 then
 			begin
 				zakr := zakr + 1;
-				if zakr > otkr then
-					res1 := false
-				else
-					res1 := true
+				res1 := false
 			end
+
+			else
+				res1 := false
 		end	
 	end
 end.
