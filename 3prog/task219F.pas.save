@@ -1,0 +1,61 @@
+program task219F;
+var
+	c: char;	
+	n, long, space, count, countS : integer;
+	itword, itspace: boolean;
+begin
+	n := 0;
+	long := 0;
+	space := 0;
+	count := 0;
+	countS := 0;
+	itword := false;
+	itspace := false;
+
+	while not eof do
+	begin
+		read(c);
+		if c = #10 then 
+		begin
+			if itword then
+				n := n + 1;
+			if count > long then
+				long := count;
+			if (count < short) and (count > 0) then
+				short := count;			
+			writeln('Кол-во слов ', n, '. Длина длинного ', long,
+			 '. Длина короткого ', short);
+			itword := false;
+			n := 0;
+			long := 0;
+			short := 0;
+			count := 0			
+		end
+		
+		else
+		begin
+			if (c <> ' ') then
+			begin
+				itword := true;
+				itspace := false;				
+				count := count + 1
+			end
+				
+			else if (c = ' ') and itword then
+			begin
+				itword := false;
+				if count > long then
+					long := count;
+				count := 0				
+			end		
+
+			else if (c = ' ') and itspace then
+			begin
+				countS := countS + 1;
+				itspace := true
+
+
+			
+		end	
+	end
+end.
