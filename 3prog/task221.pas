@@ -2,21 +2,24 @@ program task221;
 {НИЧЕГО НЕ ИЗМЕНИЛ. НУЖНО ДОДЕЛАТЬ}
 var
 	c: char;
+	n: integer;
 	word: string;	
 	itword: boolean;
 begin
 	itword := false;
-	word:= '';
+	word := '';
+	n := 0;
 	
 	while not eof do
 	begin
 		read(c);
 		if c = #10 then 
 		begin
-			if itword then
-				write('(', word, ') ');
+			if itword and (n = 2) then
+				write('(', word, ')');
 			writeln();
 			itword := false;
+			n := 0;
 			word := ''
 		end
 		
@@ -24,6 +27,7 @@ begin
 		begin
 			if (c <> ' ') then
 			begin
+				n := n + 1;		
 				itword := true;
 				word := word + c
 			end
@@ -31,12 +35,11 @@ begin
 			else if itword then
 			begin
 				itword := false;
-				write('(', word, ') ');
-				word := '' 
+				if n = 2 then
+					write('(', word, ') ');
+				word := '';
+				n := 0
 			end			
-
-			else
-				write(c)
 		end	
 	end
 end.
