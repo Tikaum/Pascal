@@ -3,7 +3,8 @@ program s224;
 var
   s1, s2, s3, med, resstr: string;
   num1, num2, res: real;
-  num3, code, i, a, dotpos: integer;
+  num3, code, i, a: integer;
+  todot: boolean;
 begin
 	s1 := ParamStr(1);
 	s2 := ParamStr(2);
@@ -29,23 +30,18 @@ begin
 	end;
 	
 	res := num1 * num2;
-	str(res:0:10, med);
+	str(res:0:num3, med);
 
-	for i := 1 to Length(med) do
+	a := 0;
+	todot := false;
+
+	for i := Length(med) downto (Length(med) - 10) do
 	begin
-		if (med[i] = '.') then
-			dotpos = i
-	end;
-
-	for i := dotpos + 1 to num3 do
-	begin
-		
-
-
-
-
-		
-	
-	resstr := str(res:
-	
+		if med[i] = '0' then
+			a := a + 1
+		else if med[i] = '.' then
+			todot := true
+		else
+			break
+	end			
 end.
