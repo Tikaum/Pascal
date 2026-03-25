@@ -3,7 +3,7 @@ program s224;
 var
   s1, s2, s3, med, resstr: string;
   num1, num2, res: real;
-  num3, code, i, a: integer;
+  num3, code, i, a, b: integer;
   todot: boolean;
 begin
 	s1 := ParamStr(1);
@@ -43,5 +43,14 @@ begin
 			todot := true
 		else
 			break
-	end			
+	end;			
+	
+	if (a > 0) and not todot then
+		b := Length(med) - a
+	else if todot then
+		b := Length(med) - (a + 1);
+	
+	SetLength(med, b);
+	
+	writeln(med)
 end.
