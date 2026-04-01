@@ -2,7 +2,7 @@ program Parandom;
 uses crt;
 
 const 
-	DelayDuration = 20;
+	DelayDuration = 1000;
 	ColorCount = 16;
 
 var
