@@ -1,98 +1,108 @@
 program crt228;
 uses crt;
 const 
-	DelayDuration = 50;
+	DelayDuration = 100;
 	
-{type 
+type 
 	star = record
 		CurX, CurY: integer;
 	end;
 
-procedure ShowStar (var s: star);
+procedure ShowHash (var s: star);
 begin
 	GotoXY(s.CurX, s.CurY);
-	write('*');
+	write('#');
 	GotoXY(1, 1)
 end;
 
-procedure HideStar (var s: star);
+procedure HideHash (var s: star);
 begin
 	GotoXY(s.CurX, s.CurY);
 	write(' ');
 	GotoXY(1, 1)
 end;
 
-procedure MoveStar (var s: star; var tudasuda: boolean; var c: integer);
+procedure MoveHash (var s: star; deldur, q: integer);
+var
+	i: integer;
 begin
-	HideStar(s);
-	if tudasuda then
+	for i := 1 to (q * 4 + 4) do
 	begin
-		s.CurX := s.CurX + 1;
-		if s.CurX >= ScreenWidth then
-			tudasuda := false
-	end
-	else
-	begin
-		s.CurX := s.CurX - 1;
-		if s.CurX <= 1 then
+		if KeyPressed then
+			break;		
+		if (i >= 1) and (i <= (q + 2)) then
 		begin
-			tudasuda := true;
-			c := c + 1
+			HideHash(s);
+			s.CurX := s.CurX + 1;
+			ShowHash(s);
+			delay(deldur)
 		end
-	end;	
-	ShowStar(s)
-end;
-}
+		else if (i >=  (q + 3)) and (i <= (q * 2 + 3)) then
+		begin
+			HideHash(s);
+			s.CurY := s.CurY + 1;
+			ShowHash(s);
+			delay(deldur)
+		end
+		else if (i >= (q * 2 + 4)) and (i <= (q * 3 + 4)) then
+		begin
+			HideHash(s);
+			s.CurX := s.CurX - 1;
+			ShowHash(s);
+			delay(deldur)
+		end
+		else
+		begin
+			HideHash(s);
+			s.CurY := s.CurY - 1;
+			ShowHash(s);
+			delay(deldur)
+		end
+	end
+end;		
+			
 procedure ShowQuadStars (quad: integer);
 var
 x, y, ix, iy: integer;
 begin
-	if (quad mod 2 = 0) then
+	x := (ScreenWidth div 2) - (quad div 2);
+	y := (ScreenHeight div 2) - (quad div 2);
+	GotoXY(x, y);
+	write('*');
+	for ix := 0 to (quad - 1) do
 	begin
-		x := (ScreenWidth div 2) - (quad div 2);
-		y := (ScreenHeight div 2) - (quad div 2);
-		GotoXY(x, y);
-		write('*');
-		for ix := 0 to (quad - 1) do
+		for iy := 0 to (quad - 1) do
 		begin
-			for iy := 0 to (quad - 1) do
-			begin
-				GotoXY(x + ix, y + iy);
-				write('*')
-			end
+			GotoXY(x + ix, y + iy);
+			write('*')
 		end
 	end
-	else
-		writeln('Введено нечетное число')
 end;
 
-
 var
-{	s: star;}
-	c, quad: integer;
-	tudasuda: boolean;
+	s: star;
+	quad: integer;
 
-begin
-	clrscr;
-	quad := 10;
-{	s.CurX := 1;
-	s.CurY := ScreenHeight div 2;
-	ShowStar(s);
-	c := 0;
-	tudasuda := true;}
-
-	while true do
+begin	
+	write('Введите четное число, равное стороне квадрата: ');
+	readln(quad);
+	while (quad mod 2 <> 0) do
 	begin
-		if not KeyPressed then
-		begin
-		{	writeln(ScreenWidth, ' ', ScreenHeight, ' ', c + 1);
-			MoveStar(s, tudasuda, c);
-			delay(DelayDuration);
-			continue}
-			ShowQuadStars(quad)
-		end
-		else
-			break
-	end;			
+		writeln('Введено нечетное число');
+		write('Повторите ввод: ');
+		readln(quad);
+	end;
+	
+	clrscr;
+	ShowQuadStars(quad);
+
+	while not KeyPressed do
+	begin
+		HideHash(s);
+		s.CurX := ((ScreenWidth div 2) - (quad div 2)) - 2;
+		s.CurY := ((ScreenHeight div 2) - (quad div 2)) - 1;
+		MoveHash(s, DelayDuration, quad)
+	end;
+		
 	clrscr
 end.
