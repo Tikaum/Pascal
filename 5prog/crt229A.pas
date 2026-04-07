@@ -1,7 +1,5 @@
 program crt229;
-uses crt;
-const 
-	DelayDuration = 100;
+uses crt; 
 	
 type 
 	star = record
@@ -22,7 +20,7 @@ begin
 	GotoXY(1, 1)
 end;
 
-procedure MoveHash (var s: star; deldur, q: integer; var chan: boolean; var c: char);
+procedure MoveHash (var s: star; var deldur: integer; q: integer; var chan: boolean; var c: char);
 var
 	i: integer;
 begin
@@ -32,6 +30,10 @@ begin
 		if KeyPressed then
 		begin
 			c := ReadKey;
+
+			if c = #0 then
+				c := ReadKey;
+
 			if c = #27 then
 				exit
 			else if c = ' ' then
@@ -39,7 +41,15 @@ begin
 				chan := not chan;
 				i := (q *4 + 4) - (i - 2)
 			end
+			else if c = #75 then
+				deldur := deldur - 10
+			else if c = #77 then
+				deldur := deldur + 10
 		end;
+
+		if deldur <= 0 then
+			deldur := 10;
+		writeln(deldur);
 
 		if (i >= 1) and (i <= (q + 1)) then
 		begin
@@ -110,7 +120,7 @@ var
 	s: star;
 	c: char;
 	chan: boolean;
-	quad: integer;
+	quad, DelayDuration: integer;
 
 begin	
 	writeln(ScreenWidth, ' ', ScreenHeight);
@@ -135,6 +145,8 @@ begin
 	ShowQuadStars(quad);
 	chan := true;	
 	c := 'a';
+	DelayDuration := 100;
+
 
 	while true do
 	begin
