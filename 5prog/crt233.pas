@@ -94,7 +94,7 @@ begin
 		if KeyPressed then
 		begin
 			c := ReadKey;
-			if (c = #27) then
+			if (c = #27) or (c = ' ') then
 				break
 		end;		
 		MoveStar(s);
