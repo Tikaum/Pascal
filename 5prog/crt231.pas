@@ -1,11 +1,13 @@
 program crt231;
 uses crt; 
 const
-	ColorCount = 8;
+	ColorCount = 16;
 var
 	AllColors: array [1..ColorCount] of word = 
 	(
-		Black, Blue, Green, Cyan, Red, Magenta, Brown, LightGray
+		Black, Blue, Green, Cyan, Red, Magenta, Brown, LightGray,
+		DarkGray, LightBlue, LightGreen, LightCyan, 
+		LightRed, LightMagenta, Yellow, White
 	);
 	
 type 
@@ -18,7 +20,7 @@ begin
 	if (i <= ColorCount) then
 		TextColor(AllColors[i])
 	else
-		TextColor(AllColors[i mod ColorCount]);	
+		TextColor(AllColors[i mod ColorCount + 1]);	
 	GotoXY(s.CurX, s.CurY);
 	write('#');
 	GotoXY(1, 1)
