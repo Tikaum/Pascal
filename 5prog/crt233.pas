@@ -22,7 +22,7 @@ begin
 	GotoXY(1, 1)
 end;
 
-procedure MoveStar (var s: star; var c: char);
+procedure MoveStar (var s: star);
 var
 	a, b, olddx, olddy: integer;
 	chan: boolean;
@@ -32,20 +32,12 @@ begin
 	olddy := s.dy;
 	chan := false;
 
-	if KeyPressed then
-	begin
-		c := ReadKey;
-		if (c = #27) then
-			exit
-	end;
-
 	a := random(10);
 	
 	if (a = 5) then
 	begin
 		repeat
-		begin
-			b := random(3);
+			b := random(4);
 			if (b = 0) then
 			begin
 				s.dx := -1;
@@ -69,7 +61,7 @@ begin
 			if (olddx <> s.dx) or (olddy <> s.dy) then
 				chan := true
 		end
-		until not chan			
+		until chan			
 	end;
 	
 	s.CurX := s.CurX + s.dx;
@@ -106,7 +98,7 @@ begin
 			if (c = #27) then
 				Halt(1)
 		end;		
-		MoveStar(s, c);
+		MoveStar(s);
 		delay(DelayDuration);
 	end;
 	clrscr
