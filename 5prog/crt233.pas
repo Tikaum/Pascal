@@ -53,14 +53,13 @@ begin
 				s.dx := 0;
 				s.dy := -1
 			end
-			else if (b = 3)
+			else if (b = 3) then
 			begin
 				s.dx := 0;
 				s.dy := 1
 			end;
 			if (olddx <> s.dx) or (olddy <> s.dy) then
-				chan := true
-		end
+				chan := true		
 		until chan			
 	end;
 	
@@ -96,7 +95,7 @@ begin
 		begin
 			c := ReadKey;
 			if (c = #27) then
-				Halt(1)
+				break
 		end;		
 		MoveStar(s);
 		delay(DelayDuration);
