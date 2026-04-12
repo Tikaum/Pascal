@@ -1,7 +1,7 @@
-program crt236;
+program crt237;
 uses crt;
 const 
-	DelayDuration = 300;
+	DelayDuration = 100;
 	
 type 
 	star = record
@@ -108,10 +108,14 @@ begin
 		c := #0
 end;
 
+function GetSym(s: star): char;
+begin
+end;
+
 procedure MoveStar (var s: star; var goex: boolean);
 var
 	a: integer;
-	c: char;
+	c, sym: char;
 	HasKeyPress: boolean;
 begin
 	HideStar(s);
@@ -161,7 +165,29 @@ begin
 		s.CurY := 1
 	else if s.CurY < 1 then
 		s.CurY := ScreenHeight;
+		
+	sym := GetSym(s);
+	if (sym = '@') then
+		goex := true;
+		
 	ShowStar(s)
+end;
+
+procedure ShowGoal;
+var
+	x, y, ix, iy: integer;
+begin
+	x := ((ScreenWidth div 2) - 2);
+	y := ((ScreenHeight div 2) - 2);
+	GotoXY(x, y);
+	for ix := 1 to 3 do
+	begin
+		for iy := 1 to 3 do
+		begin
+			GotoXY(x + ix, y + iy);
+			write('@')
+		end
+	end
 end;
 
 var
@@ -171,16 +197,15 @@ var
 begin
 	randomize;
 	clrscr;
-	s.CurX := ScreenWidth div 2;
-	s.CurY := ScreenHeight div 2;
-	s.dx := 0;
-	s.dy := 1;
+	s.CurX := 1;
+	s.CurY := 1;
+	s.dx := 1;
+	s.dy := 0;
 	goex := false;
 	s.arr := 'a';
 	s.uzepress := false;
 	s.stepa := 10;
-
-	ShowStar(s);
+	ShowGoal;
 	while not goex do
 	begin
 		MoveStar(s, goex);
