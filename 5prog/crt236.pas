@@ -68,20 +68,7 @@ procedure ManuChan(var s: star);
 var
 	c: char;
 begin
-	if s.uzepress then
-	begin
-		c := s.arr;
-		s.arr := 'a';
-		s.uzepress := false
-	end
-	
-	else
-	begin
-		c := ReadKey;
-		if c = #0 then
-			c := ReadKey
-	end;	
-	
+	c := s.arr;	
 	case c of
 		#75:
 		begin
@@ -104,38 +91,60 @@ begin
 			s.dy := 1
 		end
 	end
+	s.uzepress := false;
+	s.arr := 'a'
+end;
+
+procedure ControlKey(var c: char; var HasKeyPress: boolean);
+begin
+	HasKeyPress := KeyPressed;
+	if HasKeyPress then
+	begin
+		c := ReadKey;
+		if c = #0 then
+			c := ReadKey;
+	end
+	else
+		c := #0
 end;
 
 procedure MoveStar (var s: star; var goex: boolean);
 var
 	a: integer;
 	c: char;
+	HasKeyPress: boolean;
 begin
 	HideStar(s);
+	
+	ControlKey(c, HasKeyPress);
 
-	if KeyPressed then
+	if HasKeyPress then
 	begin
-		c := ReadKey;
 		if (c = #27) or (c = ' ') then
 			goex := true
-	end;		
+		else if c in [#75, #77, #72, #80] then
+		begin
+			if (s.stepa >= 10) then
+			begin
+				s.arr := c;
+				ManuChan(s);
+				s.stepa := 0
+			end
+			else
+			begin
+				s.arr := c;
+				s.uzepress := true
+			end
+		end
+	end;			
 
-	if KeyPressed and (s.stepa > 9) then
+	if (s.stepa >= 10) and s.uzepress then
 	begin
 		ManuChan(s);
-		s.stepa := 0
+		s.stepa := 0;
 	end
-
 	else
 	begin
-		if KeyPressed then
-		begin
-			s.uzepress := true;
-			c := ReadKey;
-			if c = #0 then
-				c := ReadKey;
-			s.arr := c
-		end;	
 		a := random(10);	
 		if (a = 5) then
 			RandChan(s);
@@ -169,6 +178,7 @@ begin
 	goex := false;
 	s.arr := 'a';
 	s.uzepress := false;
+	s.stepa := 10;
 
 	ShowStar(s);
 	while not goex do
