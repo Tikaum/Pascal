@@ -5,8 +5,9 @@ const
 	
 type 
 	star = record
-		CurX, CurY, dx, dy: integer;
-		man: boolean;
+		CurX, CurY, dx, dy, stepa: integer;
+		uzepress: boolean;
+		arr: char;
 	end;
 
 procedure ShowStar (s: star);
@@ -67,9 +68,20 @@ procedure ManuChan(var s: star);
 var
 	c: char;
 begin
-	c := ReadKey;
-	if c = #0 then
+	if s.uzepress then
+	begin
+		c := s.arr;
+		s.arr := 'a';
+		s.uzepress := false
+	end
+	
+	else
+	begin
 		c := ReadKey;
+		if c = #0 then
+			c := ReadKey
+	end;	
+	
 	case c of
 		#75:
 		begin
@@ -94,22 +106,40 @@ begin
 	end
 end;
 
-procedure MoveStar (var s: star);
+procedure MoveStar (var s: star; var goex: boolean);
 var
 	a: integer;
+	c: char;
 begin
 	HideStar(s);
 
-	if KeyPressed and not s.man then
+	if KeyPressed then
+	begin
+		c := ReadKey;
+		if (c = #27) or (c = ' ') then
+			goex := true
+	end;		
+
+	if KeyPressed and (s.stepa > 9) then
 	begin
 		ManuChan(s);
-		s.man := true
+		s.stepa := 0
 	end
+
 	else
 	begin
+		if KeyPressed then
+		begin
+			s.uzepress := true;
+			c := ReadKey;
+			if c = #0 then
+				c := ReadKey;
+			s.arr := c
+		end;	
 		a := random(10);	
 		if (a = 5) then
-			RandChan(s)
+			RandChan(s);
+		s.stepa := s.stepa + 1		
 	end;
 	
 	s.CurX := s.CurX + s.dx;
@@ -127,8 +157,7 @@ end;
 
 var
 	s: star;
-	c: char;
-	i: integer;
+	goex: boolean;
 
 begin
 	randomize;
@@ -137,33 +166,15 @@ begin
 	s.CurY := ScreenHeight div 2;
 	s.dx := 0;
 	s.dy := 1;
-	c := 'a';
-	s.man := false;
-	ShowStar(s);
-	while true do
-	begin
-		if KeyPressed then
-		begin
-			c := ReadKey;
-			if (c = #27) or (c = ' ') then
-				break
-		end;		
-		if s.man then
-		begin
-			for i := 1 to 9 do
-			begin
-				MoveStar(s);
-				delay(DelayDuration);
-				
-			end;
-			s.man := false
+	goex := false;
+	s.arr := 'a';
+	s.uzepress := false;
 
-		end
-		else	
-		begin	
-			MoveStar(s);
-			delay(DelayDuration)
-		end
+	ShowStar(s);
+	while not goex do
+	begin
+		MoveStar(s, goex);
+		delay(DelayDuration)
 	end;
 	clrscr
 end.
