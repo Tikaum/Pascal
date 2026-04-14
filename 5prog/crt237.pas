@@ -9,12 +9,37 @@ type
 		uzepress: boolean;
 		arr: char;
 	end;
+type 
+	Goalp = record
+		x, y: integer;
+	end;
+	
+var
+	Goalps: array[1..9]	of Goalp;
 
-procedure ShowStar (s: star);
+procedure ShowStar (s: star; var i: integer; var goex: boolean);
+var 
+	x, y: integer;
 begin
 	GotoXY(s.CurX, s.CurY);
 	write('*');
-	GotoXY(1, 1)
+	GotoXY(1, 1);
+	write(i);
+	i := i + 1;
+	if (i >= 300) then
+	begin
+		clrscr;
+		x := ((ScreenWidth div 2) - 13);
+		y := ((ScreenHeight div 2) - 3);
+		GotoXY(x, y);
+		writeln('Вы не уложились в 300 шагов!');
+		GotoXY(x, y + 1);
+		writeln('И проиграли');
+		GotoXY(x - 7, y + 2);
+		writeln('Нажмите Enter чтобы закончить игру');
+		readln;
+		goex := true
+	end	
 end;
 
 procedure HideStar (s: star);
@@ -108,14 +133,11 @@ begin
 		c := #0
 end;
 
-function GetSym(s: star): char;
-begin
-end;
-
-procedure MoveStar (var s: star; var goex: boolean);
+procedure MoveStar (var s: star; var goex: boolean;
+var Goalps: array of Goalp; var i: integer);
 var
-	a: integer;
-	c, sym: char;
+	a, g, x, y: integer;
+	c: char;
 	HasKeyPress: boolean;
 begin
 	HideStar(s);
@@ -165,27 +187,43 @@ begin
 		s.CurY := 1
 	else if s.CurY < 1 then
 		s.CurY := ScreenHeight;
-		
-	sym := GetSym(s);
-	if (sym = '@') then
-		goex := true;
-		
-	ShowStar(s)
+
+	for g := 1 to 9 do
+	begin
+		if (s.CurX = Goalps[g].x) and (s.CurY = Goalps[g].y) then
+		begin
+			clrscr;		
+			x := ((ScreenWidth div 2) - 3);
+			y := ((ScreenHeight div 2) - 3);
+			GotoXY(x, y);
+			writeln('YOU WIN');
+			GotoXY(x, y + 1);
+			write('in step ', i);
+			readln;
+			goex := true
+		end
+	end;
+					
+	ShowStar(s, i, goex)
 end;
 
-procedure ShowGoal;
+procedure ShowGoal(var Goalps: array of Goalp);
 var
-	x, y, ix, iy: integer;
+	x, y, ix, iy, g: integer;
 begin
 	x := ((ScreenWidth div 2) - 2);
 	y := ((ScreenHeight div 2) - 2);
+	g := 1;
 	GotoXY(x, y);
 	for ix := 1 to 3 do
 	begin
 		for iy := 1 to 3 do
 		begin
 			GotoXY(x + ix, y + iy);
-			write('@')
+			write('@');
+			Goalps[g].x := x + ix;
+			Goalps[g].y := y + iy;
+			g := g + 1
 		end
 	end
 end;
@@ -193,10 +231,11 @@ end;
 var
 	s: star;
 	goex: boolean;
-
+	i, x, y: integer;
 begin
 	randomize;
 	clrscr;
+	i := 1;
 	s.CurX := 1;
 	s.CurY := 1;
 	s.dx := 1;
@@ -205,10 +244,22 @@ begin
 	s.arr := 'a';
 	s.uzepress := false;
 	s.stepa := 10;
-	ShowGoal;
+	x := ((ScreenWidth div 2) - 13);
+	y := ((ScreenHeight div 2) - 3);
+	GotoXY(x, y);
+	writeln('Вам нужно победить за 300 шагов');
+	GotoXY(x, y + 1);
+	writeln('Приведите звездочку в цель');
+	GotoXY(x + 6, y + 2);	
+	writeln('в центре экрана!');
+	GotoXY(x, y + 3);
+	writeln('Нажмите Enter чтобы начать');
+	readln;
+	clrscr;
+	ShowGoal(Goalps);
 	while not goex do
 	begin
-		MoveStar(s, goex);
+		MoveStar(s, goex, Goalps, i);
 		delay(DelayDuration)
 	end;
 	clrscr
