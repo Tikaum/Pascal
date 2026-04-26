@@ -14,15 +14,15 @@ begin
 	end;
 	assign(src, ParamStr(1));
 	assign(dest, ParamStr(2));
-	filemod := 0;
+	filemode := 0;
 	reset(src, 1);
-	if IOResult <> then
+	if IOResult <> 0 then
 	begin
 		writeln(ErrOutput, 'Couldn''t open ', ParamStr(1));
 		halt(1)
 	end;
 	rewrite(dest, 1);
-	if IOResult <> then
+	if IOResult <> 0 then
 	begin
 		writeln(ErrOutput, 'Couldn''t open ', ParamStr(2));
 		halt(1)
